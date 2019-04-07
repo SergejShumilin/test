@@ -18,18 +18,18 @@ public class App {
 
     private static int toArray(String string) {
 
-        int count = 0;
+        int count2 = 0;
         char[] chars = string.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             for (int j = 1; j < chars.length; j++) {
                 if (i != j) {
                     if (chars[i] == chars[j]) {
-                        count = count + 1;
+                        count2 = count2 + 1;
                     }
                 }
             }
         }
-        return count;
+        return count2;
 
     }
 }
