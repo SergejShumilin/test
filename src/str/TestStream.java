@@ -1,10 +1,8 @@
 package str;
 
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import javax.jws.soap.SOAPBinding;
+import java.util.*;
 
 
 public class TestStream {
@@ -18,11 +16,19 @@ public class TestStream {
         User secondMasha = new User(4, 9, "Masha");
         User olya = new User(4, 17, "Olya");
         User kolya = new User(5, 20, "Koly");
-        User sasha = new User(6, 40, "Sasha");
+        User misha = new User(6, 14, "Misha");
+        User pasha = new User(7, 20, "Pasha");
+        User yulya = new User(8, 17, "Yulya");
+        User katya = new User(9, 17, "Katya");
+        User sasha = new User(10, 40, "Sasha");
         List<User> children = new ArrayList<>();
         children.add(ivan);
         children.add(masha);
         children.add(secondMasha);
+        children.add(misha);
+        children.add(pasha);
+        children.add(katya);
+        children.add(yulya);
         sasha.setChildren(children);
         userList = new ArrayList<>();
         userList.add(ivan);
@@ -41,9 +47,14 @@ public class TestStream {
 //        getUniqueChildrenName(userList);
 //        getChildrenOlder17(userList);
 //        getAllChildrenLess30(userList);
-        getMaxAgeParent(userList);
+//        getMaxAgeParent(userList);
+//    getMinAgeChild(userList);
+//    getAverageChildrenAge(userList);
+//    getNameFirstParentsMoreNumber(userList, 50);
+//        getFirstIdChildWhoAgeLessNumber(userList, 7);
+//        getCountParentsWhoAgeBetween18and27(userList);
+    getSortedChildren(userList);
     }
-
 
     private static void countChildren(List<User> userList) {
         long count = userList.stream()
@@ -55,7 +66,6 @@ public class TestStream {
 
     private static void countAgeParents(List<User> userList) {
         int sum = userList.stream()
-                .filter(user -> user.getChildren() == null)
                 .mapToInt(User::getAge)
                 .sum();
         System.out.println(sum);
@@ -63,7 +73,6 @@ public class TestStream {
 
     private static void countParentsOlderThan27Age(List<User> userList) {
         long count = userList.stream()
-                .filter(user -> user.getChildren() != null)
                 .filter(user -> user.getAge() > 27)
                 .count();
         System.out.println(count);
@@ -103,7 +112,7 @@ public class TestStream {
                 .forEach(s -> System.out.println(s));
     }
 
-    private static void getChildrenOlder17(List<User> userList){
+    private static void getChildrenOlder17(List<User> userList) {
         boolean b = userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
@@ -111,7 +120,7 @@ public class TestStream {
         System.out.println(b);
     }
 
-    private static void getAllChildrenLess30(List<User> userList){
+    private static void getAllChildrenLess30(List<User> userList) {
         boolean b = userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
@@ -119,11 +128,69 @@ public class TestStream {
         System.out.println(b);
     }
 
-    private static void getMaxAgeParent(List<User> userList){
+    private static void getMaxAgeParent(List<User> userList) {
         Optional<User> max = userList.stream()
-                .filter(user -> user.getChildren() != null)
                 .max((Comparator.comparingInt(User::getAge)));
         System.out.println(max.get());
     }
+
+    private static void getMinAgeChild(List<User> userList) {
+        Optional<User> min = userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .flatMap(user -> user.getChildren().stream())
+                .min((Comparator.comparingInt(User::getAge)));
+        System.out.println(min.get());
+    }
+
+    private static void getAverageChildrenAge(List<User> userList) {
+        OptionalDouble average = userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .flatMap(user -> user.getChildren().stream())
+                .mapToInt(User::getAge)
+                .average();
+        System.out.println(average.getAsDouble());
+    }
+
+    private static String getNameFirstParentsMoreNumber(List<User> userList, int i) {
+        String name = userList.stream()
+                .filter(user -> user.getAge() > i)
+                .map(User::getName)
+                .findFirst()
+                .orElse("None");
+        System.out.println(name);
+        return name;
+    }
+
+    private static long getFirstIdChildWhoAgeLessNumber(List<User> userList, int i){
+        Long id = userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .flatMap(user -> user.getChildren().stream())
+                .filter(user -> user.getAge() < i)
+                .map(User::getId)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+        System.out.println(id);
+        return id;
+    }
+
+    private static long getCountParentsWhoAgeBetween18and27(List<User> userList){
+        long count = userList.stream()
+                .filter(user -> user.getChildren()!=null)
+                .filter(user -> user.getAge() > 18)
+                .filter(user -> user.getAge() < 27)
+                .count();
+        System.out.println(count);
+        return count;
+    }
+
+    private static void getSortedChildren(List<User> userList){
+        userList.stream()
+                .filter(user -> user.getChildren()!=null)
+                .flatMap(user -> user.getChildren().stream())
+                .sorted((Comparator.comparingInt(User::getAge)))
+                .forEach(user -> System.out.println(user));
+    }
+
+
 }
 
