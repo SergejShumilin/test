@@ -38,6 +38,8 @@ public class TestStream {
         userList.add(kolya);
         userList.add(sasha);
 
+        User user = new User(1,2, "dsgsd", children2);
+
 //        countChildren(userList);
 //        countAgeParents(userList);
 //        countParentsOlderThan27Age(userList);
@@ -53,7 +55,8 @@ public class TestStream {
 //    getNameFirstParentsMoreNumber(userList, 50);
 //        getFirstIdChildWhoAgeLessNumber(userList, 7);
 //        getCountParentsWhoAgeBetween18and27(userList);
-    getSortedChildren(userList);
+//    getSortedChildrenByAge(userList);
+    getSortedChildrenByAgeFrom3To6(userList);
     }
 
     private static void countChildren(List<User> userList) {
@@ -183,11 +186,21 @@ public class TestStream {
         return count;
     }
 
-    private static void getSortedChildren(List<User> userList){
+    private static void getSortedChildrenByAge(List<User> userList){
         userList.stream()
                 .filter(user -> user.getChildren()!=null)
                 .flatMap(user -> user.getChildren().stream())
                 .sorted((Comparator.comparingInt(User::getAge)))
+                .forEach(user -> System.out.println(user));
+    }
+
+    private static void getSortedChildrenByAgeFrom3To6(List<User> userList){
+        userList.stream()
+                .filter(user -> user.getChildren()!=null)
+                .flatMap(user -> user.getChildren().stream())
+                .sorted((Comparator.comparingInt(User::getAge)))
+                .skip(3)
+                .limit(3)
                 .forEach(user -> System.out.println(user));
     }
 

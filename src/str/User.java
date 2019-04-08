@@ -15,6 +15,13 @@ public class User {
         this.name = name;
     }
 
+    public User(long id, int age, String name, List<User> children) {
+        this.id = id;
+        this.age = age;
+        this.name = name;
+        this.children = children;
+    }
+
     public long getId() {
         return id;
     }
