@@ -1,8 +1,8 @@
 package str;
 
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class TestStream {
@@ -10,26 +10,32 @@ public class TestStream {
 
 
     public static void main(String[] args) {
-        User ivan = new User(1, 10, "Ivan");
-        User petya = new User(2, 12, "Petya");
-        User masha = new User(3, 15, "Masha");
-        User secondMasha = new User(4, 9, "Masha");
-        User olya = new User(4, 17, "Olya");
-        User kolya = new User(5, 20, "Koly");
-        User misha = new User(6, 14, "Misha");
-        User pasha = new User(7, 20, "Pasha");
-        User yulya = new User(8, 17, "Yulya");
-        User katya = new User(9, 17, "Katya");
-        User sasha = new User(10, 40, "Sasha");
+           User ivan = new User(1, 10, "Ivan");
+           User petya = new User(2, 12, "Petya");
+           User masha = new User(3, 15, "Masha");
+           User secondMasha = new User(4, 9, "Masha");
+           User olya = new User(4, 17, "Olya");
+           User kolya = new User(5, 20, "Koly");
+           User misha = new User(6, 14, "Misha");
+           User pasha = new User(7, 20, "Pasha");
+           User vera = new User(8, 12, "Vera");
+           User yulya = new User(9, 17, "Yulya");
+           User katya = new User(10, 17, "Katya");
+        User sasha = new User(11, 40, "Sasha");
+        User vitya = new User(12, 50, "Petya");
         List<User> children = new ArrayList<>();
-        children.add(ivan);
-        children.add(masha);
-        children.add(secondMasha);
-        children.add(misha);
-        children.add(pasha);
-        children.add(katya);
-        children.add(yulya);
+           children.add(ivan);
+           children.add(masha);
+           children.add(secondMasha);
+           children.add(misha);
+           children.add(pasha);
+           children.add(katya);
+           children.add(yulya);
         sasha.setChildren(children);
+        List<User> childrenOfVitya = new ArrayList<>();
+           childrenOfVitya.add(petya);
+           childrenOfVitya.add(vera);
+        vitya.setChildren(childrenOfVitya);
         userList = new ArrayList<>();
         userList.add(ivan);
         userList.add(petya);
@@ -38,7 +44,6 @@ public class TestStream {
         userList.add(kolya);
         userList.add(sasha);
 
-        User user = new User(1,2, "dsgsd", children2);
 
 //        countChildren(userList);
 //        countAgeParents(userList);
@@ -56,46 +61,47 @@ public class TestStream {
 //        getFirstIdChildWhoAgeLessNumber(userList, 7);
 //        getCountParentsWhoAgeBetween18and27(userList);
 //    getSortedChildrenByAge(userList);
-    getSortedChildrenByAgeFrom3To6(userList);
+//    getSortedChildrenByAgeFrom3To6(userList);
+        getMultipliedByAgeOfParents(userList);
     }
 
-    private static void countChildren(List<User> userList) {
+    private static long countChildren(List<User> userList) {
         long count = userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .count();
-        System.out.println(count);
+        return count;
     }
 
-    private static void countAgeParents(List<User> userList) {
+    private static long countAgeParents(List<User> userList) {
         int sum = userList.stream()
                 .mapToInt(User::getAge)
                 .sum();
-        System.out.println(sum);
+        return sum;
     }
 
-    private static void countParentsOlderThan27Age(List<User> userList) {
+    private static long countParentsOlderThan27Age(List<User> userList) {
         long count = userList.stream()
                 .filter(user -> user.getAge() > 27)
                 .count();
-        System.out.println(count);
+        return count;
     }
 
-    private static void countSumAgeChild(List<User> userList) {
+    private static int countSumAgeChild(List<User> userList) {
         int sum = userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .mapToInt(User::getAge)
                 .sum();
-        System.out.println(sum);
+        return sum;
     }
 
-    private static void sortedChildrenByAge(List<User> userList) {
-        userList.stream()
+    private static List<User> sortedChildrenByAge(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .sorted(Comparator.comparingInt(User::getAge))
-                .forEach(System.out::println);
+                .collect(Collectors.toList());
     }
 
     private static void getChildrenAgeLess15(List<User> userList) {
@@ -186,24 +192,32 @@ public class TestStream {
         return count;
     }
 
-    private static void getSortedChildrenByAge(List<User> userList){
-        userList.stream()
+    private static List<User> getSortedChildrenByAge(List<User> userList){
+        return userList.stream()
                 .filter(user -> user.getChildren()!=null)
                 .flatMap(user -> user.getChildren().stream())
                 .sorted((Comparator.comparingInt(User::getAge)))
-                .forEach(user -> System.out.println(user));
+                .collect(Collectors.toList());
     }
 
-    private static void getSortedChildrenByAgeFrom3To6(List<User> userList){
-        userList.stream()
-                .filter(user -> user.getChildren()!=null)
+    private static List<User> getSortedChildrenByAgeFrom3To6(List<User> userList){
+        return userList.stream()
+                .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .sorted((Comparator.comparingInt(User::getAge)))
                 .skip(3)
                 .limit(3)
-                .forEach(user -> System.out.println(user));
+                .collect(Collectors.toList());
     }
 
-
+    private static long getMultipliedByAgeOfParents(List<User> userList){
+        long l = userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .map(User::getAge)
+                .reduce((o1, o2) -> o1 * o2)
+                .orElse(0);
+        System.out.println(l);
+        return l;
+    }
 }
 

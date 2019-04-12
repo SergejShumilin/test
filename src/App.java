@@ -17,7 +17,6 @@ public class App {
     }
 
     private static int toArray(String string) {
-
         int count2 = 0;
         char[] chars = string.toCharArray();
         for (int i = 0; i < chars.length; i++) {
@@ -30,6 +29,5 @@ public class App {
             }
         }
         return count2;
-
     }
 }
