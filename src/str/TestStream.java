@@ -14,15 +14,14 @@ public class TestStream {
            User petya = new User(2, 12, "Petya");
            User masha = new User(3, 15, "Masha");
            User secondMasha = new User(4, 9, "Masha");
-           User olya = new User(4, 17, "Olya");
-           User kolya = new User(5, 20, "Koly");
-           User misha = new User(6, 14, "Misha");
-           User pasha = new User(7, 20, "Pasha");
-           User vera = new User(8, 12, "Vera");
-           User yulya = new User(9, 17, "Yulya");
+           User olya = new User(5, 17, "Olya");
+           User kolya = new User(6, 20, "Koly");
+           User misha = new User(7, 14, "Misha");
+           User pasha = new User(8, 20, "Pasha");
+           User vera = new User(9, 12, "Vera");
            User katya = new User(10, 17, "Katya");
-        User sasha = new User(11, 40, "Sasha");
-        User vitya = new User(12, 50, "Petya");
+        User sasha = new User(13, 40, "Sasha");
+        User vitya = new User(14, 50, "Petya");
         List<User> children = new ArrayList<>();
            children.add(ivan);
            children.add(masha);
@@ -30,7 +29,6 @@ public class TestStream {
            children.add(misha);
            children.add(pasha);
            children.add(katya);
-           children.add(yulya);
         sasha.setChildren(children);
         List<User> childrenOfVitya = new ArrayList<>();
            childrenOfVitya.add(petya);
@@ -40,9 +38,15 @@ public class TestStream {
         userList.add(ivan);
         userList.add(petya);
         userList.add(masha);
+        userList.add(secondMasha);
         userList.add(olya);
         userList.add(kolya);
+        userList.add(misha);
+        userList.add(pasha);
+        userList.add(vera);
+        userList.add(katya);
         userList.add(sasha);
+        userList.add(vitya);
 
 
 //        countChildren(userList);
@@ -62,7 +66,8 @@ public class TestStream {
 //        getCountParentsWhoAgeBetween18and27(userList);
 //    getSortedChildrenByAge(userList);
 //    getSortedChildrenByAgeFrom3To6(userList);
-        getMultipliedByAgeOfParents(userList);
+//        getMultipliedByAgeOfParents(userList);
+        getListParentsName(userList);
     }
 
     private static long countChildren(List<User> userList) {
@@ -104,60 +109,59 @@ public class TestStream {
                 .collect(Collectors.toList());
     }
 
-    private static void getChildrenAgeLess15(List<User> userList) {
-        userList.stream()
+    private static List<User> getChildrenAgeLess15(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .filter(user -> user.getAge() < 15)
-                .forEach(System.out::println);
+                .collect(Collectors.toList());
     }
 
-    private static void getUniqueChildrenName(List<User> userList) {
-        userList.stream()
+    private static List<String> getUniqueChildrenName(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
-                .map(user -> user.getName())
+                .map(User::getName)
                 .distinct()
-                .forEach(s -> System.out.println(s));
+                .collect(Collectors.toList());
     }
 
-    private static void getChildrenOlder17(List<User> userList) {
-        boolean b = userList.stream()
+    private static boolean getChildrenOlder17(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .anyMatch(user -> user.getAge() > 17);
-        System.out.println(b);
     }
 
-    private static void getAllChildrenLess30(List<User> userList) {
-        boolean b = userList.stream()
+    private static boolean getAllChildrenLess30(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .allMatch(user -> user.getAge() < 30);
-        System.out.println(b);
     }
 
-    private static void getMaxAgeParent(List<User> userList) {
-        Optional<User> max = userList.stream()
-                .max((Comparator.comparingInt(User::getAge)));
-        System.out.println(max.get());
+    private static int getMaxAgeParent(List<User> userList) {
+        return userList.stream()
+                .max(Comparator.comparingInt(User::getAge))
+                .get().getAge();
+
     }
 
-    private static void getMinAgeChild(List<User> userList) {
-        Optional<User> min = userList.stream()
+    private static int getMinAgeChild(List<User> userList) {
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
-                .min((Comparator.comparingInt(User::getAge)));
-        System.out.println(min.get());
+                .min((Comparator.comparingInt(User::getAge)))
+                .get().getAge();
+
     }
 
-    private static void getAverageChildrenAge(List<User> userList) {
-        OptionalDouble average = userList.stream()
+    private static OptionalDouble getAverageChildrenAge(List<User> userList) {
+         return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .mapToInt(User::getAge)
                 .average();
-        System.out.println(average.getAsDouble());
     }
 
     private static String getNameFirstParentsMoreNumber(List<User> userList, int i) {
@@ -211,13 +215,12 @@ public class TestStream {
     }
 
     private static long getMultipliedByAgeOfParents(List<User> userList){
-        long l = userList.stream()
+         return userList.stream()
                 .filter(user -> user.getChildren() != null)
-                .map(User::getAge)
+                .mapToLong(User::getAge)
                 .reduce((o1, o2) -> o1 * o2)
                 .orElse(0);
-        System.out.println(l);
-        return l;
     }
+
 }
 
