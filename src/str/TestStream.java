@@ -67,8 +67,8 @@ public class TestStream {
 //    getSortedChildrenByAge(userList);
 //    getSortedChildrenByAgeFrom3To6(userList);
 //        getMultipliedByAgeOfParents(userList);
-//        getParentsName(userList);
-        getMapWithKeyId(userList);
+        getParentsNameSplitComma(userList);
+//        getMapWithKeyId(userList);
     }
 
     private static long countChildren(List<User> userList) {
@@ -223,16 +223,16 @@ public class TestStream {
                 .orElse(0);
     }
 
-    private static List<String> getParentsName(List<User> userList){
+    private static String getParentsNameSplitComma(List<User> userList){
         return userList.stream()
                 .filter(user -> user.getChildren() != null)
-                .flatMap(user -> Arrays.asList(user.getName().split(",")).stream())
-                .collect(Collectors.toList());
+                .map(user -> user.getName())
+                .collect(Collectors.joining(","));
     }
 
     private static Map<Long, List<User>> getMapWithKeyId(List<User> userList){
-        return userList.stream()
-                .filter(user -> user.getChildren()!=null)
+       return userList.stream()
+                .filter(user -> user.getChildren() != null)
                 .collect(Collectors.toMap(user -> user.getId(), user -> user.getChildren()));
     }
 
