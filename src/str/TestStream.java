@@ -21,7 +21,7 @@ public class TestStream {
            User vera = new User(9, 12, "Vera");
            User katya = new User(10, 17, "Katya");
         User sasha = new User(13, 40, "Sasha");
-        User vitya = new User(14, 50, "Petya");
+        User vitya = new User(14, 50, "Vitya");
         List<User> children = new ArrayList<>();
            children.add(ivan);
            children.add(masha);
@@ -67,7 +67,8 @@ public class TestStream {
 //    getSortedChildrenByAge(userList);
 //    getSortedChildrenByAgeFrom3To6(userList);
 //        getMultipliedByAgeOfParents(userList);
-        getListParentsName(userList);
+//        getParentsName(userList);
+        getMapWithKeyId(userList);
     }
 
     private static long countChildren(List<User> userList) {
@@ -220,6 +221,19 @@ public class TestStream {
                 .mapToLong(User::getAge)
                 .reduce((o1, o2) -> o1 * o2)
                 .orElse(0);
+    }
+
+    private static List<String> getParentsName(List<User> userList){
+        return userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .flatMap(user -> Arrays.asList(user.getName().split(",")).stream())
+                .collect(Collectors.toList());
+    }
+
+    private static Map<Long, List<User>> getMapWithKeyId(List<User> userList){
+        return userList.stream()
+                .filter(user -> user.getChildren()!=null)
+                .collect(Collectors.toMap(user -> user.getId(), user -> user.getChildren()));
     }
 
 }
