@@ -3,6 +3,7 @@ package str;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class TestStream {
@@ -10,43 +11,43 @@ public class TestStream {
 
 
     public static void main(String[] args) {
-           User ivan = new User(1, 10, "Ivan");
-           User petya = new User(2, 12, "Petya");
-           User masha = new User(3, 15, "Masha");
-           User secondMasha = new User(4, 9, "Masha");
-           User olya = new User(5, 17, "Olya");
-           User kolya = new User(6, 20, "Koly");
-           User misha = new User(7, 14, "Misha");
-           User pasha = new User(8, 20, "Pasha");
-           User vera = new User(9, 12, "Vera");
-           User katya = new User(10, 17, "Katya");
-        User sasha = new User(13, 40, "Sasha");
-        User vitya = new User(14, 50, "Vitya");
-        List<User> children = new ArrayList<>();
-           children.add(ivan);
-           children.add(masha);
-           children.add(secondMasha);
-           children.add(misha);
-           children.add(pasha);
-           children.add(katya);
-        sasha.setChildren(children);
-        List<User> childrenOfVitya = new ArrayList<>();
-           childrenOfVitya.add(petya);
-           childrenOfVitya.add(vera);
-        vitya.setChildren(childrenOfVitya);
-        userList = new ArrayList<>();
-        userList.add(ivan);
-        userList.add(petya);
-        userList.add(masha);
-        userList.add(secondMasha);
-        userList.add(olya);
-        userList.add(kolya);
-        userList.add(misha);
-        userList.add(pasha);
-        userList.add(vera);
-        userList.add(katya);
-        userList.add(sasha);
-        userList.add(vitya);
+//           User ivan = new User(1, 10, "Ivan");
+//           User petya = new User(2, 12, "Petya");
+//           User masha = new User(3, 15, "Masha");
+//           User secondMasha = new User(4, 9, "Masha");
+//           User olya = new User(5, 17, "Olya");
+//           User kolya = new User(6, 20, "Koly");
+//           User misha = new User(7, 14, "Misha");
+//           User pasha = new User(8, 20, "Pasha");
+//           User vera = new User(9, 12, "Vera");
+//           User katya = new User(10, 17, "Katya");
+//        User sasha = new User(13, 40, "Sasha");
+//        User vitya = new User(14, 50, "Vitya");
+//        List<User> children = new ArrayList<>();
+//           children.add(ivan);
+//           children.add(masha);
+//           children.add(secondMasha);
+//           children.add(misha);
+//           children.add(pasha);
+//           children.add(katya);
+//        sasha.setChildren(children);
+//        List<User> childrenOfVitya = new ArrayList<>();
+//           childrenOfVitya.add(petya);
+//           childrenOfVitya.add(vera);
+//        vitya.setChildren(childrenOfVitya);
+//        userList = new ArrayList<>();
+//        userList.add(ivan);
+//        userList.add(petya);
+//        userList.add(masha);
+//        userList.add(secondMasha);
+//        userList.add(olya);
+//        userList.add(kolya);
+//        userList.add(misha);
+//        userList.add(pasha);
+//        userList.add(vera);
+//        userList.add(katya);
+//        userList.add(sasha);
+//        userList.add(vitya);
 
 
 //        countChildren(userList);
@@ -67,16 +68,17 @@ public class TestStream {
 //    getSortedChildrenByAge(userList);
 //    getSortedChildrenByAgeFrom3To6(userList);
 //        getMultipliedByAgeOfParents(userList);
-        getParentsNameSplitComma(userList);
+//        getParentsNameSplitComma(userList);
 //        getMapWithKeyId(userList);
+//        getMapWithKeyParents(userList);
+        getMapWithKeyParentAndValueMAxAgeChild(userList);
     }
 
     private static long countChildren(List<User> userList) {
-        long count = userList.stream()
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .count();
-        return count;
     }
 
     private static long countAgeParents(List<User> userList) {
@@ -87,19 +89,17 @@ public class TestStream {
     }
 
     private static long countParentsOlderThan27Age(List<User> userList) {
-        long count = userList.stream()
+        return userList.stream()
                 .filter(user -> user.getAge() > 27)
                 .count();
-        return count;
     }
 
     private static int countSumAgeChild(List<User> userList) {
-        int sum = userList.stream()
+        return userList.stream()
                 .filter(user -> user.getChildren() != null)
                 .flatMap(user -> user.getChildren().stream())
                 .mapToInt(User::getAge)
                 .sum();
-        return sum;
     }
 
     private static List<User> sortedChildrenByAge(List<User> userList) {
@@ -236,5 +236,17 @@ public class TestStream {
                 .collect(Collectors.toMap(user -> user.getId(), user -> user.getChildren()));
     }
 
+    private static Map<User, Stream<User>> getMapWithKeyParents(List<User> userList){
+        return userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .collect(Collectors.toMap(user -> user, user -> user.getChildren().stream()));
+    }
+
+    private static Map<User, OptionalInt> getMapWithKeyParentAndValueMAxAgeChild(List<User> userList){
+        return userList.stream()
+                .filter(user -> user.getChildren() != null)
+                .collect(Collectors.toMap(user -> user, user -> user.getChildren().stream()
+                        .mapToInt(User::getAge).max()));
+    }
 }
 
