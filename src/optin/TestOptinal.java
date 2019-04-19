@@ -48,11 +48,12 @@ public class TestOptinal {
                 .orElse(null);
     }
 //не работает
-    public static List<User> getListChildren(Optional<User> user){
-        return user.flatMap(user1 -> user1.getChildren().stream())
-                .collect(Collectors.toList())
-                .orElse(new ArrayList<>());
-    }
+//    public static List<User> getListChildren(Optional<User> user){
+//        return user.filter(user1 -> user1.getChildren()!=null)
+//                .flatMap(User::getChildren)
+//                .collect(Collectors.toList())
+//                .orElse(new ArrayList<>());
+//    }
 
     public static String getNameChildWhereAge7(Optional<User> user){
         return user.filter(user1 -> user1.getAge()==7)
@@ -61,16 +62,16 @@ public class TestOptinal {
     }
 //не работает
     public static String getNameChildWhereAge8(Optional<User> user){
-        return user.filter(user1 -> user1.getAge()==8)
+        return user.flatMap(user1 -> user1.getChildren().stream().filter(user2 -> user2.getAge()==8).findFirst())
                 .map(user1 -> user1.getName())
                 .orElseThrow(NoSuchElementException::new);
     }
 //не работает
-    public static String getNameChildrenOrGetNoName(Optional<User> user) {
-        return user.flatMap(user1 -> user1.getChildren().stream())
-                .map(user1 -> user1.getName())
-                .orElseGet(TestOptinal::getNoName);
-    }
+//    public static String getNameChildrenOrGetNoName(Optional<User> user) {
+//        return user.flatMap(user1 -> user1.getChildren().stream())
+//                .map(user1 -> user1.getName())
+//                .orElseGet(TestOptinal::getNoName);
+//    }
     public static String getNoName(){
         return "NoName";
     }
